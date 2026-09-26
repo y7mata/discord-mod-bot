@@ -13,13 +13,16 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 
+GUILD_ID = discord.Object(id=1550666309388210256)
+
 @bot.event
 async def on_ready():
     await database.init_db()
     print(f"Online como {bot.user} ({bot.user.id})")
     try:
-        synced = await bot.tree.sync()
-        print(f"Slash commands sincronizados: {len(synced)}")
+        bot.tree.copy_global_to(guild=GUILD_ID)
+        synced = await bot.tree.sync(guild=GUILD_ID)
+        print(f"Slash commands sincronizados no servidor: {len(synced)}")
     except Exception as e:
         print(f"Erro ao sincronizar: {e}")
 
