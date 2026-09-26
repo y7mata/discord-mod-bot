@@ -1,0 +1,39 @@
+import asyncio
+import os
+import discord
+from discord.ext import commands
+import database
+
+TOKEN = os.environ["DISCORD_TOKEN"]
+
+intents = discord.Intents.default()
+intents.members = True
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+
+@bot.event
+async def on_ready():
+    await database.init_db()
+    print(f"Online como {bot.user} ({bot.user.id})")
+    try:
+        synced = await bot.tree.sync()
+        print(f"Slash commands sincronizados: {len(synced)}")
+    except Exception as e:
+        print(f"Erro ao sincronizar: {e}")
+
+
+async def load_cogs():
+    for cog in ("cogs.moderation", "cogs.roles", "cogs.config"):
+        await bot.load_extension(cog)
+        print(f"Cog carregada: {cog}")
+
+
+async def main():
+    async with bot:
+        await load_cogs()
+        await bot.start(TOKEN)
+
+
+asyncio.run(main())
