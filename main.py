@@ -25,7 +25,7 @@ async def on_ready():
 
 
 async def load_cogs():
-    for cog in ("cogs.moderation", "cogs.roles", "cogs.config"):
+    for cog in ("cogs.moderation", "cogs.roles", "cogs.config", "cogs.pd"):
         await bot.load_extension(cog)
         print(f"Cog carregada: {cog}")
 

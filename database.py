@@ -9,7 +9,8 @@ async def init_db():
             CREATE TABLE IF NOT EXISTS guild_config (
                 guild_id    INTEGER PRIMARY KEY,
                 log_channel INTEGER,
-                auto_role   INTEGER
+                auto_role   INTEGER,
+                pd_role     INTEGER
             )
         """)
         await db.execute("""

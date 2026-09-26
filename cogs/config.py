@@ -37,9 +37,21 @@ class Config(commands.Cog):
             if cfg.get("auto_role") else "Não configurado"
         )
         embed = discord.Embed(title="⚙️ Configuração do Servidor", color=discord.Color.blurple())
+        pd_role = (
+            interaction.guild.get_role(cfg["pd_role"]).mention
+            if cfg.get("pd_role") else "Não configurado"
+        )
         embed.add_field(name="Canal de Logs", value=log_ch, inline=False)
         embed.add_field(name="Auto-role",     value=auto_role, inline=False)
+        embed.add_field(name="Cargo PD",      value=pd_role, inline=False)
         await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @cfg_group.command(name="pd", description="Define o cargo PD usado em /pd dar e /pd tirar.")
+    @app_commands.describe(cargo="Cargo PD")
+    @app_commands.default_permissions(administrator=True)
+    async def cfg_pd(self, interaction: discord.Interaction, cargo: discord.Role):
+        await database.set_config(interaction.guild.id, pd_role=cargo.id)
+        await interaction.response.send_message(f"✅ Cargo PD definido: {cargo.mention}", ephemeral=True)
 
     @cfg_group.command(name="reset", description="Reseta toda a configuração do servidor.")
     @app_commands.default_permissions(administrator=True)
