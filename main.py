@@ -20,6 +20,10 @@ async def on_ready():
     await database.init_db()
     print(f"Online como {bot.user} ({bot.user.id})")
     try:
+        # limpa comandos globais duplicados
+        bot.tree.clear_commands(guild=None)
+        await bot.tree.sync()
+        # sincroniza só no servidor
         bot.tree.copy_global_to(guild=GUILD_ID)
         synced = await bot.tree.sync(guild=GUILD_ID)
         print(f"Slash commands sincronizados no servidor: {len(synced)}")
